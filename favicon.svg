@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="7" fill="#1a1a2e"/>
+  <!-- Equalizer bars -->
+  <rect x="4"  y="18" width="4" height="10" rx="2" fill="#3d6df6"/>
+  <rect x="10" y="10" width="4" height="18" rx="2" fill="#5a8aff"/>
+  <rect x="16" y="4"  width="4" height="24" rx="2" fill="#3d6df6"/>
+  <rect x="22" y="12" width="4" height="16" rx="2" fill="#5a8aff"/>
+  <!-- Top highlight dots -->
+  <circle cx="6"  cy="16" r="2" fill="#7ea8ff"/>
+  <circle cx="12" cy="8"  r="2" fill="#7ea8ff"/>
+  <circle cx="18" cy="2"  r="2" fill="#7ea8ff"/>
+  <circle cx="24" cy="10" r="2" fill="#7ea8ff"/>
+</svg>

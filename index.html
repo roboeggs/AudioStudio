@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Studio - p5.js + p5.sound</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    </head>
+    <body>
+        <div class="shell">
+            <div class="header">
+                <h1>Audio Studio</h1>
+            </div>
+
+            <div class="container">
+                <div class="main-layout">
+                    <div class="left-section">
+                        <div class="visual">
+                            <div class="panel-title"><span>FX</span>Original and processed sound spectrum</div>
+                            <div id="p5-sketch"></div>
+                        </div>
+
+                        
+
+                        <div class="layout" style="margin-top: 14px;">
+                    
+                    <div class="panel" style="grid-column: 1 / -1;">
+                        <div class="panel-title"><span>🎛</span>Effects Chain</div>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+                            <!-- Low-pass filter -->
+                            <details class="effect-card">
+                                <summary>Low-pass filter</summary>
+                                <div style="display:grid; gap:6px; font-size:12px; padding-top:6px;">
+                                    <div>
+                                        <label>Cutoff: <span id="lpCutoffVal">20000</span> Hz</label>
+                                        <input type="range" id="lpCutoff" min="20" max="20000" value="20000" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>Resonance: <span id="lpQVal">1</span></label>
+                                        <input type="range" id="lpQ" min="0.1" max="20" step="0.1" value="1" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>DW: <span id="lpDWVal">0</span>%</label>
+                                        <input type="range" id="lpDW" min="0" max="100" value="0" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>OL: <span id="lpOLVal">100</span>%</label>
+                                        <input type="range" id="lpOL" min="0" max="100" value="100" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Waveshaper distortion -->
+                            <details class="effect-card">
+                                <summary>Waveshaper distortion</summary>
+                                <div style="display:grid; gap:6px; font-size:12px; padding-top:6px;">
+                                    <div>
+                                        <label>Amount: <span id="wsAmountVal">0</span></label>
+                                        <input type="range" id="wsAmount" min="0" max="100" value="0" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>Oversample: <select id="wsOversample" style="padding:4px; border-radius:6px; border:1px solid #d7ddf3; background:#fff;">
+                                            <option value="none">None</option>
+                                            <option value="2x">2x</option>
+                                            <option value="4x">4x</option>
+                                        </select></label>
+                                    </div>
+                                    <div>
+                                        <label>DW: <span id="wsDWVal">0</span>%</label>
+                                        <input type="range" id="wsDW" min="0" max="100" value="0" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>OL: <span id="wsOLVal">100</span>%</label>
+                                        <input type="range" id="wsOL" min="0" max="100" value="100" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Dynamic compressor -->
+                            <details class="effect-card">
+                                <summary>Dynamic compressor</summary>
+                                <div style="display:grid; gap:6px; font-size:12px; padding-top:6px;">
+                                    <div>
+                                        <label>Attack: <span id="compAttackVal">3</span> ms</label>
+                                        <input type="range" id="compAttack" min="0" max="1000" value="3" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>Knee: <span id="compKneeVal">30</span> dB</label>
+                                        <input type="range" id="compKnee" min="0" max="40" value="30" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>Release: <span id="compReleaseVal">250</span> ms</label>
+                                        <input type="range" id="compRelease" min="0" max="1000" value="250" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>Ratio: <span id="compRatioVal">12</span>:1</label>
+                                        <input type="range" id="compRatio" min="1" max="20" value="12" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>Threshold: <span id="compThresholdVal">-24</span> dB</label>
+                                        <input type="range" id="compThreshold" min="-100" max="0" value="-24" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>DW: <span id="compDWVal">0</span>%</label>
+                                        <input type="range" id="compDW" min="0" max="100" value="0" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>OL: <span id="compOLVal">100</span>%</label>
+                                        <input type="range" id="compOL" min="0" max="100" value="100" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Reverb -->
+                            <details class="effect-card">
+                                <summary>Reverb filter</summary>
+                                <div style="display:grid; gap:6px; font-size:12px; padding-top:6px;">
+                                    <div>
+                                        <label>Duration: <span id="revDurationVal">2.0</span> s</label>
+                                        <input type="range" id="revDuration" min="0.1" max="5" step="0.1" value="2" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>Decay: <span id="revDecayVal">0.5</span></label>
+                                        <input type="range" id="revDecay" min="0.1" max="2" step="0.1" value="0.5" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label><input type="checkbox" id="revReverse"> Reverse</label>
+                                    </div>
+                                    <div>
+                                        <label>DW: <span id="revDWVal">0</span>%</label>
+                                        <input type="range" id="revDW" min="0" max="100" value="0" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                    <div>
+                                        <label>OL: <span id="revOLVal">100</span>%</label>
+                                        <input type="range" id="revOL" min="0" max="100" value="100" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Master Volume -->
+                            <details class="effect-card" open>
+                                <summary>Master Volume</summary>
+                                <div style="display:grid; gap:6px; font-size:12px; padding-top:6px;">
+                                    <div>
+                                        <label>Volume: <span id="masterVolVal">70</span>%</label>
+                                        <input type="range" id="masterVol" min="0" max="100" value="70" style="width:100%; cursor:pointer; accent-color:#3d6df6;">
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="button-row" style="margin-top:12px; flex-wrap:wrap; gap:8px;">
+                            <button class="btn-danger" id="clearEffectsBtn">🔄 Reset effects</button>
+                            <button class="btn-primary" id="toggleEffectsCollapse">↕ Expand all</button>
+                            <label style="display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600;">
+                                <input type="checkbox" id="enableEffects" style="width:18px; height:18px; cursor:pointer;">
+                                Enable effects chain
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div style="position: sticky; top: 20px; display: grid; gap: 12px;">
+                    <div class="panel">
+                        <div class="panel-title"><span>🎵</span>Playback Controls</div>
+                        <div class="status-box" id="playbackStatus">Select a source to play</div>
+                        <!-- Primary playback controls row -->
+                        <div style="margin-top:8px; display:flex; gap:6px; align-items:center;">
+                            <button class="btn-primary btn-icon" id="universalPlayBtn" disabled title="Play">▶</button>
+                            <button class="btn-danger btn-icon" id="universalStopBtn" disabled title="Stop">⏹</button>
+                        </div>
+                        <!-- Secondary recording controls row -->
+                        <div style="margin-top:8px; display:flex; gap:6px; align-items:center;">
+                            <button class="btn-danger btn-icon btn-record" id="recordBtn" title="Record">●</button>
+                            <button class="btn-success btn-icon" id="downloadBtn" disabled title="Download WAV">⬇</button>
+                            <button class="btn-success btn-icon" id="selectRecordBtn" disabled title="Select recording">✓</button>
+                        </div>
+                        <!-- Tertiary file controls row -->
+                        <div style="margin-top:8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                            <label for="audioFile" class="file-label" title="Select file" style="padding:6px 8px; margin:0;">📂</label>
+                            <input type="file" id="audioFile" accept=".wav,.mp3,.ogg,.m4a,audio/*">
+                            <span class="file-name" id="fileName" style="font-size:12px; color:#475569; min-width:80px;">No file selected</span>
+                            <button class="btn-success btn-icon" id="selectUploadBtn" disabled title="Select file">✓</button>
+                        </div>
+                        <div style="margin-top:8px; display:grid; gap:8px;">
+                            <div class="status-box" id="recordStatus">Ready to record</div>
+                            <div class="status-box" id="uploadStatus">Upload a file to play</div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-title"><span>📚</span>Sound Library</div>
+                        <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap: wrap;">
+                            <button class="btn-success" id="saveRecordingBtn" disabled title="Save recording">💾 Recording</button>
+                            <button class="btn-success" id="saveUploadBtn" disabled title="Save file">💾 File</button>
+                        </div>
+                        <div id="libraryList" style="display:grid; gap:8px; max-height:calc(100vh - 250px); overflow-y:auto;">
+                            <div style="text-align:center; padding:20px; color:#64748b; font-size:13px;">
+                                Library is empty. Save a recording or an uploaded file.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+
+        <!-- p5.js and p5.sound libraries -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+
+        <script type="module" src="./app.js"></script>
+    </body>
+    </html>
